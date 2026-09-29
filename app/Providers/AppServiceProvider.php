@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
@@ -24,6 +25,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+        User::created(function (User $user) {
+            $user->forceFill(['customer_no' => 'K-'.(10000 + $user->id)])->saveQuietly();
+        });
     }
 
     /**

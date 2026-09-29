@@ -11,7 +11,7 @@ class Order extends Model
     /** German VAT in percent (Aufgabe 2). */
     public const TAX_RATE = 19;
 
-    protected $fillable = ['customer_id', 'total_net', 'tax_rate', 'total_tax', 'total_gross'];
+    protected $fillable = ['user_id', 'customer_no', 'total_net', 'tax_rate', 'total_tax', 'total_gross'];
 
     protected function casts(): array
     {
@@ -23,9 +23,9 @@ class Order extends Model
         ];
     }
 
-    public function customer(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(User::class);
     }
 
     public function items(): HasMany

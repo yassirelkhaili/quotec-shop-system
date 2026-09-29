@@ -3,13 +3,12 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
-use App\Models\Customer;
 use App\Models\Product;
 use Illuminate\Database\Seeder;
 
 /**
- * Categories in 3 levels, 6 fixed products + 30 generated ones (enough for pagination),
- * 2 fixed test customers + 5 generated ones.
+ * Categories in 3 levels, 6 fixed products + 30 generated ones (enough for pagination).
+ * Customers are the registered users (DatabaseSeeder creates the test users).
  */
 class ShopSeeder extends Seeder
 {
@@ -60,9 +59,5 @@ class ShopSeeder extends Seeder
             ->count(30)
             ->state(fn () => ['category_id' => $leafIds->random()])
             ->create();
-
-        Customer::create(['customer_no' => 'K-10001', 'first_name' => 'Anna', 'last_name' => 'Schmidt', 'email' => 'anna.schmidt@example.com']);
-        Customer::create(['customer_no' => 'K-10002', 'first_name' => 'Jonas', 'last_name' => 'Weber', 'email' => 'jonas.weber@example.com']);
-        Customer::factory()->count(5)->create();
     }
 }

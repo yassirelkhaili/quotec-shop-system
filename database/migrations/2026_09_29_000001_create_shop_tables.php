@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-// Tabellen laut ERD (Aufgaben 5–7). Ausführen mit: php artisan migrate --seed
+// Tables from the ERD (Aufgaben 5–7). Customers are the starter kit's users (see next migration).
 return new class extends Migration
 {
     public function up(): void
@@ -22,28 +22,21 @@ return new class extends Migration
             $table->string('product_no', 20)->unique();
             $table->string('name', 150);
             $table->decimal('unit_price', 10, 2);
-            $table->unsignedInteger('stock')->default(0); // max. verfügbare Menge
+            $table->unsignedInteger('stock')->default(0); // max. available amount
             $table->foreignId('category_id')->constrained()->restrictOnDelete();
-            $table->timestamps();
-        });
-
-        Schema::create('customers', function (Blueprint $table) {
-            $table->id();
-            $table->string('customer_no', 20)->unique();
-            $table->string('first_name', 80);
-            $table->string('last_name', 80);
-            $table->string('email', 150);
             $table->timestamps();
         });
 
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('customer_id')->constrained()->restrictOnDelete();
+            // Order stays when the user deletes the account (settings page), so nullable.
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
+            $table->string('customer_no', 20);   // copied at order time (Aufgabe 4: order contains customer number)
             $table->decimal('total_net', 10, 2)->default(0);
             $table->decimal('tax_rate', 5, 2)->default(19.00);
             $table->decimal('total_tax', 10, 2)->default(0);
             $table->decimal('total_gross', 10, 2)->default(0);
-            $table->timestamps(); // created_at = Bestelldatum
+            $table->timestamps();                  // created_at = order date
         });
 
         Schema::create('order_items', function (Blueprint $table) {
@@ -51,7 +44,7 @@ return new class extends Migration
             $table->foreignId('order_id')->constrained()->cascadeOnDelete();
             $table->foreignId('product_id')->constrained()->restrictOnDelete();
             $table->unsignedInteger('quantity');
-            $table->decimal('unit_price', 10, 2); // Preis zum Bestellzeitpunkt
+            $table->decimal('unit_price', 10, 2); // price at order time
             $table->unique(['order_id', 'product_id']);
         });
     }
@@ -60,7 +53,6 @@ return new class extends Migration
     {
         Schema::dropIfExists('order_items');
         Schema::dropIfExists('orders');
-        Schema::dropIfExists('customers');
         Schema::dropIfExists('products');
         Schema::dropIfExists('categories');
     }

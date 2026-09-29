@@ -1,35 +1,44 @@
 # MySQL for the shop (Aufgabe 5+). Start with: docker compose up -d
 # Laravel itself runs on your machine (php artisan serve / composer run dev).
 services:
-  mysql:
-    image: mysql:8.4
-    container_name: shop-mysql
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: "0000"     # user root / password 0000 (as required)
-      MYSQL_DATABASE: shop
-    ports:
-      - "3307:3306"                   # change to "3307:3306" if a local MySQL already uses 3306
-    volumes:
-      - shop-mysql-data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p0000"]
-      interval: 5s
-      timeout: 3s
-      retries: 20
+    mysql:
+        image: mysql:8.4
+        container_name: shop-mysql
+        restart: unless-stopped
+        environment:
+            MYSQL_ROOT_PASSWORD: '0000' # user root / password 0000 (as required)
+            MYSQL_DATABASE: shop
+        ports:
+            - '3307:3306' # change to "3307:3306" if a local MySQL already uses 3306
+        volumes:
+            - shop-mysql-data:/var/lib/mysql
+        healthcheck:
+            test:
+                [
+                    'CMD',
+                    'mysqladmin',
+                    'ping',
+                    '-h',
+                    '127.0.0.1',
+                    '-uroot',
+                    '-p0000',
+                ]
+            interval: 5s
+            timeout: 3s
+            retries: 20
 
-  # Optional: look at the tables in the browser on http://localhost:8080 (root / 0000)
-  phpmyadmin:
-    image: phpmyadmin:5
-    container_name: shop-phpmyadmin
-    restart: unless-stopped
-    environment:
-      PMA_HOST: mysql
-    ports:
-      - "8080:80"
-    depends_on:
-      mysql:
-        condition: service_healthy
+    # Optional: look at the tables in the browser on http://localhost:8080 (root / 0000)
+    phpmyadmin:
+        image: phpmyadmin:5
+        container_name: shop-phpmyadmin
+        restart: unless-stopped
+        environment:
+            PMA_HOST: mysql
+        ports:
+            - '8080:80'
+        depends_on:
+            mysql:
+                condition: service_healthy
 
 volumes:
-  shop-mysql-data:
+    shop-mysql-data:

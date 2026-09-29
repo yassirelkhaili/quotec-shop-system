@@ -13,12 +13,14 @@ import { useInitials } from '@/hooks/use-initials';
 import { home, login, register } from '@/routes';
 import type { User } from '@/types';
 
+type Customer = User & { customer_no?: string | null };
+
 /**
  * Layout for the shop and the settings pages:
  * header with logo (left) and profile menu (right), no dashboard sidebar.
  */
 export default function ShopLayout({ children }: { children: ReactNode }) {
-    const { auth } = usePage<{ auth: { user: User | null } }>().props;
+    const { auth } = usePage<{ auth: { user: Customer | null } }>().props;
     const getInitials = useInitials();
 
     return (
@@ -30,21 +32,40 @@ export default function ShopLayout({ children }: { children: ReactNode }) {
                     </Link>
 
                     {auth.user ? (
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" className="size-10 rounded-full p-1">
-                                    <Avatar className="size-8 overflow-hidden rounded-full">
-                                        <AvatarImage src={auth.user.avatar} alt={auth.user.name} />
-                                        <AvatarFallback className="rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
-                                            {getInitials(auth.user.name)}
-                                        </AvatarFallback>
-                                    </Avatar>
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="w-56" align="end">
-                                <UserMenuContent user={auth.user} />
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                        <div className="flex items-center gap-3">
+                            {auth.user.customer_no && (
+                                <span className="hidden text-sm text-muted-foreground sm:inline">
+                                    Kundennr.{' '}
+                                    <span className="font-medium text-foreground tabular-nums">
+                                        {auth.user.customer_no}
+                                    </span>
+                                </span>
+                            )}
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        className="size-10 rounded-full p-1"
+                                    >
+                                        <Avatar className="size-8 overflow-hidden rounded-full">
+                                            <AvatarImage
+                                                src={auth.user.avatar}
+                                                alt={auth.user.name}
+                                            />
+                                            <AvatarFallback className="rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
+                                                {getInitials(auth.user.name)}
+                                            </AvatarFallback>
+                                        </Avatar>
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                    className="w-56"
+                                    align="end"
+                                >
+                                    <UserMenuContent user={auth.user} />
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </div>
                     ) : (
                         <div className="flex items-center gap-2">
                             <Button variant="ghost" asChild>

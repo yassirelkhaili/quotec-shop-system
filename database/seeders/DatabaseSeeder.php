@@ -9,11 +9,10 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // Login for the starter kit: test@example.com / password
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Test logins (password: "password"). Customer numbers K-10001 / K-10002
+        // are assigned automatically when the users are created (AppServiceProvider).
+        User::factory()->create(['name' => 'Test User', 'email' => 'test@example.com']);
+        User::factory()->create(['name' => 'Anna Schmidt', 'email' => 'anna@example.com']);
 
         $this->call(ShopSeeder::class);
     }
