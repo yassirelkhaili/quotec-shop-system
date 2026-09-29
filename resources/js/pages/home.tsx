@@ -1,8 +1,7 @@
-import { Head, Link, router, usePage } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { Minus, Plus, ShoppingCart, Trash2 } from 'lucide-react';
 import type { ChangeEvent } from 'react';
 import { useMemo, useState } from 'react';
-import AppLogo from '@/components/app-logo';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,22 +11,13 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Spinner } from '@/components/ui/spinner';
-import { UserMenuContent } from '@/components/user-menu-content';
-import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
-import { home, login, register } from '@/routes';
+import { home } from '@/routes';
 import { store } from '@/routes/orders';
-import type { User } from '@/types';
 
 type Category = { id: number; parent_id: number | null; name: string };
 type CategoryNode = Category & { children: CategoryNode[] };
@@ -122,48 +112,6 @@ function CategoryTree({
                 </li>
             ))}
         </ul>
-    );
-}
-
-function Header() {
-    const { auth } = usePage<{ auth: { user: User | null } }>().props;
-    const getInitials = useInitials();
-
-    return (
-        <header className="border-b border-sidebar-border/80">
-            <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
-                <Link href={home()} className="flex items-center">
-                    <AppLogo />
-                </Link>
-
-                {auth.user ? (
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="size-10 rounded-full p-1">
-                                <Avatar className="size-8 overflow-hidden rounded-full">
-                                    <AvatarImage src={auth.user.avatar} alt={auth.user.name} />
-                                    <AvatarFallback className="rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
-                                        {getInitials(auth.user.name)}
-                                    </AvatarFallback>
-                                </Avatar>
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-56" align="end">
-                            <UserMenuContent user={auth.user} />
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                ) : (
-                    <div className="flex items-center gap-2">
-                        <Button variant="ghost" asChild>
-                            <Link href={login()}>Log in</Link>
-                        </Button>
-                        <Button asChild>
-                            <Link href={register()}>Register</Link>
-                        </Button>
-                    </div>
-                )}
-            </div>
-        </header>
     );
 }
 
@@ -284,10 +232,8 @@ export default function Home({ categories, products, selectedCategory, taxRate, 
     return (
         <>
             <Head title="Shop" />
-            <div className="min-h-svh bg-background">
-                <Header />
 
-                <main className="mx-auto grid max-w-7xl gap-6 px-4 py-8 lg:grid-cols-[220px_minmax(0,1fr)_360px]">
+                <div className="grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)_360px]">
                     {/* Aufgabe 7: category hierarchy for navigation */}
                     <aside className="grid content-start gap-3">
                         <h2 className="text-sm font-medium">Kategorien</h2>
@@ -475,8 +421,7 @@ export default function Home({ categories, products, selectedCategory, taxRate, 
                             </CardContent>
                         </Card>
                     </aside>
-                </main>
-            </div>
+                </div>
         </>
     );
 }

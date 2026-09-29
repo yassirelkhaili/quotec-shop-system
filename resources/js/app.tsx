@@ -5,6 +5,7 @@ import { initializeTheme } from '@/hooks/use-appearance';
 import AppLayout from '@/layouts/app-layout';
 import AuthLayout from '@/layouts/auth-layout';
 import SettingsLayout from '@/layouts/settings/layout';
+import ShopLayout from '@/layouts/shop-layout';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -12,13 +13,15 @@ void createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
     layout: (name) => {
         switch (true) {
-            // The shop home page brings its own header (logo + profile menu).
-            case name === 'welcome' || name === 'home':
+            case name === 'welcome':
                 return null;
+            // Shop and settings: header with logo + profile menu, no dashboard sidebar.
+            case name === 'home':
+                return ShopLayout;
             case name.startsWith('auth/'):
                 return AuthLayout;
             case name.startsWith('settings/'):
-                return [AppLayout, SettingsLayout];
+                return [ShopLayout, SettingsLayout];
             default:
                 return AppLayout;
         }
